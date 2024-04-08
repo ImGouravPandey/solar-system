@@ -61,6 +61,7 @@ jobs:
         run: npm install
           
       - name: Check Code Coverage
+        continue-on-error:  true # don't fail the action if there is no code to cover
         run: npm run coverage
           
       - name: Archive Code Coverage Result
