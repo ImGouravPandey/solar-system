@@ -40,13 +40,14 @@ jobs:
         run: npm test
 
       - name: Archive Test Result
-        if: steps.nodejs-unit-testing-step.outcome == 'failure' || steps.nodejs-unit-testing-step.outcome == 'success' 
+        if: failure() && (steps.nodejs-unit-testing-step.outcome == 'failure' || steps.nodejs-unit-testing-step.outcome == 'success')
         # if something breaks at the unit test, this will keep it running 
         uses: actions/upload-artifact@v3
         with: 
           name: mocha-test-result
           path: test-results.xml
 
+# if: steps.nodejs-unit-testing-step.outcome == 'failure' || steps.nodejs-unit-testing-step.outcome == 'success' if it is still giving error, its because of status(), a default status check of success is applied unless you include one of these function, check status check function documentation, here for test im using failure
 
   code-coverage: 
     name: code coverage
