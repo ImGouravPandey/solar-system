@@ -29,6 +29,12 @@ jobs:
         with:
           node-version: ${{ matrix.nodejs_version }}
 
+      - name: Cache NPM dependencies
+        uses: actions/cache@v3
+        with: 
+          path: node_modules
+          key: ${{ runner.os}}-node-modules-${{ hashFiles('package-lock.json') }}
+
       - name: Install Dependencies
         run: npm install
 
@@ -67,11 +73,17 @@ jobs:
         with:
           node-version: 18
           
+      - name: Cache NPM dependencies
+        uses: actions/cache@v3
+        with: 
+          path: node_modules
+          key: ${{ runner.os}}-node-modules-${{ hashFiles('package-lock.json') }}
+          
       - name: Install Dependencies
         run: npm install
           
       - name: Check Code Coverage
-        continue-on-error:  true # don't fail the action if there is no code to cover
+        continue-on-error: true # don't fail the action if there is no code to cover
         run: npm run coverage
           
       - name: Archive Code Coverage Result
