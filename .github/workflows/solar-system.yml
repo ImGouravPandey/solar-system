@@ -17,11 +17,8 @@ jobs:
     name: Unit Testing
     strategy:
       matrix: 
-        nodejs_version: [18,19] # 20]
-        operating_system: [ubuntu-latest] #macos-latest]
-        # exclude:
-        #   - nodejs_version: 18
-        #     operating_system: macos-latest   
+        nodejs_version: [18, 19]
+        operating_system: [ubuntu-latest]
     runs-on: ${{ matrix.operating_system }}    
     steps:
       - name: Checkout Repository
@@ -36,22 +33,30 @@ jobs:
         run: npm install
 
       - name: Run Tests
-        id: nodejs-unit-testing-step #added this specific id so if something  fails it can be referenced in the next step
+        id: nodejs-unit-testing-step
         run: npm test
 
       - name: Archive Test Result
         if: always()
-          # failure() && (steps.nodejs-unit-testing-step.outcome == 'failure' || steps.nodejs-unit-testing-step.outcome == 'success')
-          # if something breaks at the unit test, this will keep it running 
         uses: actions/upload-artifact@v3
         with: 
           name: mocha-test-result
           path: test-results.xml
+          # Explanation:
+          # The condition 'if: steps.nodejs-unit-testing-step.outcome == 'failure' || steps.nodejs-unit-testing-step.outcome == 'success' ensures that the step runs regardless of the test outcome.
+          # If this condition causes an error, it's likely due to the default status check of success applied by GitHub Actions unless overridden.
+          # The default status check behavior can be modified using various status check functions documented in the GitHub Actions documentation.
+          # Here, 'failure()' function is employed to trigger the step even if the unit test fails.
+          # By using 'always()' condition, the step is guaranteed to execute irrespective of the preceding steps' success or failure.
+          # This setup ensures that the archiving of test results remains consistent and thorough, aiding in troubleshooting and analysis.
 
-# if: steps.nodejs-unit-testing-step.outcome == 'failure' || steps.nodejs-unit-testing-step.outcome == 'success' if it is still giving error, its because of status(), a default status check of success is applied unless you include one of these function, check status check function documentation, here for test im using failure, now even the unit test breaks archive step will run, but if we fixed the error, the if line will skip, thats why im using always() so it always execute even if the previous steps fails or pass
+          # Explanation:
+          # The 'Archive Test Result' step ensures that test results are saved
+          # If a unit test fails, this step will still run due to the 'always()' function,
+          # which guarantees its execution regardless of the previous step's outcome
 
   code-coverage: 
-    name: code coverage
+    name: Code Coverage
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
