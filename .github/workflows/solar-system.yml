@@ -78,6 +78,20 @@ jobs:
         with: 
           path: node_modules
           key: ${{ runner.os}}-node-modules-${{ hashFiles('package-lock.json') }}
+
+          ### Cache NPM Dependencies
+
+# This step caches NPM dependencies to improve workflow efficiency by avoiding unnecessary installations of dependencies that have not changed.
+
+# - **Name:** Cache NPM dependencies
+# - **Uses:** [actions/cache@v3](https://github.com/actions/cache)
+# - **Purpose:** This action caches the NPM dependencies to speed up subsequent workflow runs by reusing previously installed dependencies.
+# - **Configuration:**
+#   - **`path`:** Specifies the directory containing NPM dependencies to be cached. In this case, it is set to `node_modules`.
+  # - **`key`:** Sets a unique key for the cache entry. The key is composed of the operating system of the runner (`[ # { runner.os } ]`) concatenated with the hash of the `package-lock.json` file. This ensures that the cache is specific to the operating system and the exact versions of dependencies specified in `package-lock.json`.
+# - **Why Cache NPM Dependencies?** Caching NPM dependencies reduces the time required for subsequent workflow runs, especially in scenarios where dependencies remain unchanged. By caching dependencies, the workflow can skip the installation step if the dependencies are already present in the cache, thus improving overall workflow execution time.
+# - **Note:** It's important to update the `package-lock.json` file whenever there are changes in dependencies to ensure accurate caching.
+
           
       - name: Install Dependencies
         run: npm install
