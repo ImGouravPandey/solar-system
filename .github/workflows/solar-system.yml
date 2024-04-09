@@ -186,9 +186,9 @@ jobs:
         with: 
           version: 'v1.26.0'
     
-      - name: Fetch kubernetes Cluster details
-        run: |
-          kubectl version --short
-          echo --------------------
-          kubec  tl get nodes
+      # - name: Fetch kubernetes Cluster details
+      #   run: |
+      #     kubectl version --short
+      #     echo --------------------
+      #     kubec  tl get nodes
     
